@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  title: DemoApp
+  version: 0.1.0
+  contact:
+    name: hippeus
+    email: plachta.maciej@gmail.com
+# Allows extensions to the Swagger Schema. The field name MUST begin with x-
+#
+# x-oapi-codegen field is consumed by scripts/openapi-gen.sh
+x-oapi-codegen:
+  - generator:
+      language: Go
+      target: server
+      opt-ins: "types,spec"
+      go_package: restv1
+      path: pkg/demoapp/rest/server.gen.go
+  - generator:
+      language: typescript-axios
+      path: ui/src/api/gen/demoapp
+paths:
+  /api/v1/demoapp/.well-known/alive:
+    get:
+      operationId: LivenessProbeRequest
+      description: checks if node is accessible
+      parameters:
+        - in: query
+          name: full
+          description: prints meta information about the node
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: node is alive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LivenessProbeResponse"
+        "503":
+          description: server temporary unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationError"
+components:
+  schemas:
+    LivenessProbeResponse:
+      type: object
+    ApplicationError:
+      type: object
+      properties:
+        message:
+          type: string
+        debug:
+          type: boolean
+      required:
+        - message

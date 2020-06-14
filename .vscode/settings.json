@@ -1,0 +1,48 @@
+{
+  "git.enabled": true,
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true
+    },
+    "editor.codeActionsOnSaveTimeout": 5000
+  },
+  "[go.mod]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "go.useLanguageServer": true,
+  "gopls": {
+    "usePlaceholders": true,
+    "analyses": {
+      "fillreturns": true,
+      "undeclarename": true,
+      "unusedparams": true,
+      "nonewvars": true
+    }
+  },
+  "go.testTimeout": "30s",
+  "go.buildOnSave": "package",
+  "go.lintOnSave": "package",
+  "go.autocompleteUnimportedPackages": true,
+  "go.lintFlags": ["--fast"],
+  "go.inferGopath": false,
+  "go.vetOnSave": "package",
+  "go.useCodeSnippetsOnFunctionSuggest": true,
+  "go.docsTool": "godoc",
+  "go.gotoSymbol.includeImports": true,
+  "go.addTags": {
+    "tags": "json",
+    "options": "json=omitempty",
+    "promptForTags": false,
+    "transform": "snakecase"
+  },
+  "files.eol": "\n",
+  "cSpell.words": ["grpc", "uuid"],
+  "cSpell.language": "en-GB" // formatting only supports LF line endings
+}

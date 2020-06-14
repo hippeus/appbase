@@ -1,0 +1,15 @@
+app:
+  name: "demoapp"
+
+http:
+  host: "0.0.0.0"
+  port: 8080
+  tls:
+    enabled: false
+
+logging:
+  mode: develop
+  console:
+    enabled: true
+    level: debug
+    format: console
