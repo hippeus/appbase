@@ -98,8 +98,9 @@ _optional steps_
 
 ## Interacting with a Service
 
-`http://localhost:8080/` -- landing page in React
-`http://localhost:8080/api/v1/demoapp/.well-known/alive?full=1` -- backend health-check
+> `http://localhost:8080/` -- React landing Page
+
+> `http://localhost:8080/api/v1/demoapp/.well-known/alive?full=1` -- backend health-check
 
 ## Developer tools
 
