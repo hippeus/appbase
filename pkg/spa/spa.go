@@ -1,45 +1,32 @@
 package spa
 
 import (
-	"bytes"
-	"io"
 	"net/http"
+	"strings"
 
+	"github.com/gobuffalo/packr/v2"
 	"github.com/hippeus/appbase/pkg/logger"
 	"github.com/labstack/echo/v4"
-	"github.com/markbates/pkger"
-)
-
-//go:generate pkger
-
-const (
-	// DistPath describe targeted root directory for embedded files. Should
-	// treat GOMOD as filesystem root.
-	// Must be static and known at compile time so pkger tool could parse it.
-	DistPath = "/ui/build"
 )
 
 type SPA struct {
-	MountPath string
-
 	logger.Logger
-	embedFSRoot pkger.Dir
+
+	Box    *packr.Box
+	Prefix string
 }
 
+var (
+	FrontendApp = &SPA{
+		Box: packr.New("demoapp", "../../ui/build"),
+	}
+)
+
 func (s *SPA) MountToEchoRouter(router *echo.Echo, m ...echo.MiddlewareFunc) {
-	if s.embedFSRoot == "" {
-		s.embedFSRoot = pkger.Dir(DistPath)
+	if s.Prefix == "" {
+		s.Prefix = "/*"
 	}
-	if s.Logger == nil {
-		s.Logger = logger.NOP{}
-	}
-
-	if s.MountPath == "" {
-		s.MountPath = "/*"
-	}
-
-	s.Infof("Mount SPA to %s", s.MountPath)
-	_ = router.GET(s.MountPath, s.echoHandleEmbeddedFiles, m...)
+	_ = router.GET(s.Prefix, s.echoHandleEmbeddedFiles, m...)
 }
 
 func (s *SPA) echoHandleEmbeddedFiles(ctx echo.Context) error {
@@ -52,25 +39,18 @@ func (s *SPA) echoHandleEmbeddedFiles(ctx echo.Context) error {
 		uri = indexPage
 	}
 
-	file, err := s.embedFSRoot.Open(uri)
+	uri = strings.TrimPrefix(uri, s.Prefix)
+
+	body, err := s.Box.Find(uri)
 	if err != nil {
 		// fallback to the landing page
-		file, err = s.embedFSRoot.Open(indexPage)
+		body, err = s.Box.Find(indexPage)
 		if err != nil {
 			s.Errorf("rolling back to the landing page failed")
 			return ctx.NoContent(http.StatusNotFound)
 		}
 	}
-	defer file.Close()
 
-	buf := &bytes.Buffer{}
-	_, err = io.Copy(buf, file)
-	if err != nil {
-		info, _ := file.Stat()
-		s.Errorf("failed to load file %s, for url request: %s", info.Name, uri)
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to load a file").SetInternal(err)
-	}
-
-	ct := http.DetectContentType(buf.Bytes())
-	return ctx.Blob(http.StatusOK, ct, buf.Bytes())
+	ct := http.DetectContentType(body)
+	return ctx.Blob(http.StatusOK, ct, body)
 }

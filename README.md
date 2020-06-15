@@ -13,7 +13,7 @@ Test project to build simple RESTful service based on OpenApi definitions define
 - [x] Middleware for REST endpoints
 - [x] Picking structured logging library
 - [x] Dummy Frontend SPA
-- [ ] Single Binary deployment with embedded SPA
+- [x] Single Binary deployment with embedded SPA
 - [ ] Persistence storage
 - [ ] SearchStore capabilities
 
@@ -64,9 +64,42 @@ docker build \
 
 ### Docker run
 
+```sh
+docker run -p 8080:8080 --rm macpla/webapp
+```
+
 ### Local build
 
+1. build ui component (React App)
+
+```bash
+./scripts/build-ui.sh
+```
+
+2. build backend with embedded SPA.
+
+```bash
+./scripts/build-local.sh
+```
+
+_optional steps_
+
+- clean `pack2` generated files
+
+```bash
+./scripts/build-local.sh clean
+```
+
+- openApi spec generation
+
+```bash
+./scripts/openapi-gen.sh
+```
+
 ## Interacting with a Service
+
+`http://localhost:8080/` -- landing page in React
+`http://localhost:8080/api/v1/demoapp/.well-known/alive?full=1` -- backend health-check
 
 ## Developer tools
 
@@ -76,4 +109,4 @@ docker build \
 
 [openapi-generator-cli](https://github.com/openapitools/openapi-generator-cli) - all purpose node based OpenAPI generator used to generate frontend client
 
-[markbates/pkger](https://github.com/markbates/pkger) - static files to Go embedding processor
+[gobuffalo/packr/v2](github.com/gobuffalo/packr/v2) - static files to Go embedding processor

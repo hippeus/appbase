@@ -14,18 +14,30 @@ if [ $YARN_EXISTS -ne 0 ]; then
   exit -1
 fi
 
-which pkger >/dev/null 2>&1
-PKGER_EXISTS=$?
-if [ $PKGER_EXISTS -ne 0 ]; then
-  echo "markbates/pkger is missing..."
-  echo "check https://github.com/markbates/pkger for installation directions"
+which packr2 >/dev/null 2>&1
+PACKR2_EXISTS=$?
+if [ $PACKR2_EXISTS -ne 0 ]; then
+  echo "gobuffalo/packr/v2 is missing..."
+  echo "check github.com/gobuffalo/packr/v2 for installation directions"
   exit -1
 fi
 
-pushd ${REPO_ROOT}/ui/
-yarn build
-popd
+ARG1=${1:-"build"}
 
-pushd ${REPO_ROOT}
-go generate ./...
-popd
+function execute() {
+  if [ "$1" == "clean" ]; then
+    pushd ${REPO_ROOT}/pkg/spa
+    packr2 clean
+    popd
+  else
+    pushd ${REPO_ROOT}/ui/
+    yarn build
+    popd
+
+    pushd ${REPO_ROOT}/pkg/spa
+    packr2
+    popd
+  fi
+}
+
+execute $ARG1

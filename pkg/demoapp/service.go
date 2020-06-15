@@ -62,10 +62,7 @@ func (svc *Service) Run(ctx context.Context) error {
 		AppName: svc.Name,
 	})
 
-	svc.ui = &spa.SPA{
-		Logger:    svc.Logger,
-		MountPath: "/*",
-	}
+	svc.ui = spa.FrontendApp
 	svc.ui.MountToEchoRouter(svc.e)
 
 	return svc.e.Start(fmt.Sprintf("%s:%d", svc.Host, svc.Port))
