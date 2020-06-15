@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/elliots/litter"
 	"github.com/hippeus/appbase/pkg/logger"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/pkger"
@@ -38,6 +39,8 @@ func (s *SPA) MountToEchoRouter(router *echo.Echo, m ...echo.MiddlewareFunc) {
 		s.MountPath = "/*"
 	}
 
+	info, _ := pkger.Current()
+	litter.DumpColor(info)
 	s.Infof("Mount SPA to %s", s.MountPath)
 	_ = router.GET(s.MountPath, s.echoHandleEmbeddedFiles, m...)
 }

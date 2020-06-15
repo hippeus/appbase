@@ -64,9 +64,36 @@ docker build \
 
 ### Docker run
 
+```sh
+docker run -p 8080:8080 --rm macpla/webapp
+```
+
 ### Local build
 
+1. build ui component (React App)
+
+```bash
+./scripts/build-ui.sh
+```
+
+2. build backend with embedded SPA.
+
+```bash
+./scripts/build-local.sh
+```
+
+_optional steps_
+
+- openApi spec generation
+
+```bash
+./scripts/openapi-gen.sh
+```
+
 ## Interacting with a Service
+
+`http://localhost:8080/` -- landing page in React
+`http://localhost:8080/api/v1/demoapp/.well-known/alive?full=1` -- backend health-check
 
 ## Developer tools
 
